@@ -150,7 +150,11 @@ def check_file(printer, path, config):
     expected = yaml.load_all(stream)
 
     differences = 0
-    for data in expected:
+    for ix, data in enumerate(expected):
+      if data is None:
+        print('Skipping null object at index %d\n' % ix)
+        continue
+
       try:
         for kube_obj in KubeObject.from_dict(data, config["namespace"]):
           printer.add(path, kube_obj)
